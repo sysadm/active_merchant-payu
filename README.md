@@ -1,6 +1,10 @@
 # PayU gateway for active_merchant
 PayU also known as platnosci.pl
 
+### Installation
+just add to your Gemfile:
+`gem "active_merchant-payu", :git => 'git://github.com/netguru/active_merchant-payu.git'`
+and run `bundle install`
 
 ### Links
 http://www.payu.pl/
