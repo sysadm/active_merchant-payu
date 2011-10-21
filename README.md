@@ -3,13 +3,17 @@ PayU also known as platnosci.pl
 
 ### Installation
 just add to your Gemfile:
-`gem "active_merchant-payu", :git => 'git://github.com/netguru/active_merchant-payu.git'`
+
+```
+gem "active_merchant-payu", :git => 'git://github.com/netguru/active_merchant-payu.git'
+```
+
 and run `bundle install`
 
 ### Links
-http://www.payu.pl/
-http://serwis.platnosci.pl/view/admin/ckeditor/uploaded_images/110518135351_dokumentacja_platnosci.pl_2011-05-16.pdf
-http://activemerchant.org/
-https://github.com/Shopify/active_merchant
+* http://www.payu.pl/
+* http://serwis.platnosci.pl/view/admin/ckeditor/uploaded_images/110518135351_dokumentacja_platnosci.pl_2011-05-16.pdf
+* http://activemerchant.org/
+* https://github.com/Shopify/active_merchant
 
 ## Feel welcome to contribute!
