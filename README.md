@@ -15,5 +15,8 @@ and run `bundle install`
 * http://serwis.platnosci.pl/view/admin/ckeditor/uploaded_images/110518135351_dokumentacja_platnosci.pl_2011-05-16.pdf
 * http://activemerchant.org/
 * https://github.com/Shopify/active_merchant
+other resources might be helpful
+* http://railscasts.com/episodes/144-active-merchant-basics
+* http://railscasts.com/episodes/145-integrating-active-merchant
 
 ## Feel welcome to contribute!
