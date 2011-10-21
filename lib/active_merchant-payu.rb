@@ -4,6 +4,8 @@ require "active_merchant"
 module ActiveMerchant
   module Billing
     class PayuGateway < Gateway
+      NEW_PAYMENT_URL = "https://www.platnosci.pl/paygw/UTF/NewPayment"
+      
       self.homepage_url = 'http://www.payu.pl/'
       self.display_name = 'PayU'
       # The countries the gateway supports merchants from as 2 digit ISO country codes
@@ -14,7 +16,7 @@ module ActiveMerchant
       
 
       def initialize(options = {})
-        requires!(options, :key, :key2, :pos_auth_key, :pos_id)
+        requires!(options, :key1, :key2, :pos_auth_key, :pos_id)
         @options = options
         super
       end
@@ -45,6 +47,48 @@ module ActiveMerchant
 
       def credit(money, identification, options = {})
         not_yet
+      end
+      
+      
+      def required_hash_parameters
+        {
+          :pos_id => "",
+          :pos_auth_key => "",
+          :session_id => "",
+          :amount => "",
+          :desc => "",
+          :first_name => "",
+          :last_name => "",
+          :email => "",
+          :client_ip => ""
+        }
+      end
+      
+      def optional_hash_parameters
+        {
+          :pay_type => "",
+          :order_id => "",
+          :desc2 => "",
+          :trsDesc => "",
+          :street => "",
+          :street_hn => "",
+          :street_an => "",
+          :city => "",
+          :post_code => "",
+          :country => "",
+          :country => "",
+          :language => "",
+          :js => "",
+          :payback_login => "",
+          :sig => "",
+          :sig => ""
+        }
+      end
+        
+      # https://github.com/Shopify/active_merchant/blob/master/lib/active_merchant/billing/gateways/card_stream.rb
+      # https://github.com/netguru/siepomaga/blob/master/app/models/payments/platnosci.rb
+      def commit(action, parameters)
+        
       end
 
       private

@@ -1,5 +1,5 @@
 payu:
-  key: "MD5_KEY"
+  key1: "MD5_KEY"
   key2: "MD5_KEY2"
   pos_auth_key: "POS_KEY"
   pos_id: "POS_ID"
