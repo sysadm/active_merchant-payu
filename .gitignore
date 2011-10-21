@@ -1,4 +1,6 @@
 *.gem
 .bundle
 Gemfile.lock
+sample/config.rb
+.DS_Store
 pkg/*

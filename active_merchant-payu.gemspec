@@ -17,6 +17,6 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
   
-  spec.add_dependency("activemerchant", "~> 1.18.1")
+  s.add_dependency("activemerchant", "~> 1.18.1")
   
 end

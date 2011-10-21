@@ -1,2 +1,11 @@
 # PayU gateway for active_merchant
-PauU also known as platnosci.pl
+PayU also known as platnosci.pl
+
+
+### Links
+http://www.payu.pl/
+http://serwis.platnosci.pl/view/admin/ckeditor/uploaded_images/110518135351_dokumentacja_platnosci.pl_2011-05-16.pdf
+http://activemerchant.org/
+https://github.com/Shopify/active_merchant
+
+## Feel welcome to contribute!
