@@ -1,8 +1,0 @@
-# user:   
-# pass:   
-
-ActiveMerchant::Billing::Base.mode = :test
-gateway = ActiveMerchant::Billing::PayuGateway.new(
-  :login => 'YOUR_LOGIN',
-  :password => "YOUR_PASSWORD"
-)

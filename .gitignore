@@ -1,6 +1,6 @@
 *.gem
 .bundle
 Gemfile.lock
-sample/config.rb
+sample/config.yml
 .DS_Store
 pkg/*
