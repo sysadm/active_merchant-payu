@@ -1,3 +1,4 @@
 source 'http://rubygems.org'
 
-gem "active_merchant-payu", :git => 'git://github.com/netguru/active_merchant-payu.git'
+gem "active_merchant-payu", :path => "../"
+
