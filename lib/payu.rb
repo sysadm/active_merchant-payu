@@ -10,8 +10,6 @@ module ActiveMerchant
       #accepted money format
       self.money_format = :cents
       
-      
-      
     end
   end
 end
