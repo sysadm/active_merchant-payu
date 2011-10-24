@@ -1,4 +1,5 @@
 payu:
+  default_desc: "DEFAULT_DESCRIPTION"
   key1: "MD5_KEY"
   key2: "MD5_KEY2"
   pos_auth_key: "POS_KEY"

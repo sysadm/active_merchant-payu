@@ -16,7 +16,7 @@ module ActiveMerchant
       
 
       def initialize(options = {})
-        requires!(options, :key1, :key2, :pos_auth_key, :pos_id)
+        requires!(options, :key1, :key2, :pos_auth_key, :pos_id, :default_desc)
         @options = options
         super
       end
@@ -50,40 +50,56 @@ module ActiveMerchant
       end
       
       
-      def required_hash_parameters
-        {
-          :pos_id => "",
-          :pos_auth_key => "",
-          :session_id => "",
-          :amount => "",
-          :desc => "",
-          :first_name => "",
-          :last_name => "",
-          :email => "",
-          :client_ip => ""
-        }
+      def generate_link(amount, order_id, firstname = "", lastname = "", email = "", ip = "", desc = nil)  
+        
+        link = "#{NEW_PAYMENT_URL}?"
+        { 
+          :first_name => firstname,
+          :last_name => lastname,
+          :email => email,
+          :pos_id => @options[:pos_id],
+          :pos_auth_key => @options[:pos_auth_key],
+          :amount => amount*100,
+          :session_id => order_id + "-" + Digest::MD5.hexdigest(order_id.to_s + @options[:key1]).to_s,
+          :client_ip => ip,
+          :js => 1,
+          :desc => desc || @options[:default_desc]
+        }.each do |k,v|
+          link << "#{k}=#{v}&"
+        end
+        URI.encode(link)
       end
       
-      def optional_hash_parameters
-        {
-          :pay_type => "",
-          :order_id => "",
-          :desc2 => "",
-          :trsDesc => "",
-          :street => "",
-          :street_hn => "",
-          :street_an => "",
-          :city => "",
-          :post_code => "",
-          :country => "",
-          :country => "",
-          :language => "",
-          :js => "",
-          :payback_login => "",
-          :sig => "",
-          :sig => ""
-        }
-      end
+      
+      # {
+      #   :pos_id => "",
+      #   :pos_auth_key => "",
+      #   :session_id => "",
+      #   :amount => "",
+      #   :desc => "",
+      #   :first_name => "",
+      #   :last_name => "",
+      #   :email => "",
+      #   :client_ip => ""
+      # }
+      # {
+      #   :pay_type => "",
+      #   :order_id => "",
+      #   :desc2 => "",
+      #   :trsDesc => "",
+      #   :street => "",
+      #   :street_hn => "",
+      #   :street_an => "",
+      #   :city => "",
+      #   :post_code => "",
+      #   :country => "",
+      #   :country => "",
+      #   :language => "",
+      #   :js => "",
+      #   :payback_login => "",
+      #   :sig => "",
+      #   :sig => ""
+      # }
         
       # https://github.com/Shopify/active_merchant/blob/master/lib/active_merchant/billing/gateways/card_stream.rb
       # https://github.com/netguru/siepomaga/blob/master/app/models/payments/platnosci.rb

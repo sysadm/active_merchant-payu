@@ -6,6 +6,9 @@ config = YAML.load_file("config.yml")
 ActiveMerchant::Billing::Base.mode = :test
 gateway = ActiveMerchant::Billing::PayuGateway.new(config['payu'].symbolize_keys!)
 
+
+puts gateway.generate_link(2, 'zam1', firstname = "M.", lastname = "T.", email = "m@t.com", ip = "127.0.0.1")  
+
 # if credit_card.valid?
 #   # or gateway.purchase to do both authorize and capture
 #   response = gateway.authorize(1000, credit_card, :ip => "127.0.0.1")
