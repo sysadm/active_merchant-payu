@@ -4,7 +4,7 @@ $:.push File.expand_path("../lib", __FILE__)
 Gem::Specification.new do |s|
   s.name          = "active_merchant-payu"
   s.version       = "0.01"
-  s.authors       = ["Michał Taberski"]
+  s.authors       = ["Michal Taberski"]
   s.email         = "michal.taberski@netguru.pl"
   s.homepage      = "http://github.com/netguru/active_merchant-payu"
   s.summary       = "Active Merchant gateway for PayU provider."
