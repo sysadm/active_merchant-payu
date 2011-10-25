@@ -78,7 +78,7 @@ module ActiveMerchant
         session_id.split('-').last == Digest::MD5.hexdigest(session_id.to_i.to_s + @options[:key1]).to_s
       end
 
-      def confirm_payment(params)
+      def get_status(params)
         pos_id = @options[:pos_id]  
         key = @options[:key1]
         ts = (Time.now.to_f*1000).to_i
