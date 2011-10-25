@@ -50,7 +50,7 @@ module ActiveMerchant
       end
       
       
-      def generate_link(amount, order_id, firstname = "", lastname = "", email = "", ip = "", desc = nil)  
+      def generate_link(amount, order_id, firstname = "", lastname = "", email = "", ip = "", chanel = nil, desc = nil)  
         
         link = "#{NEW_PAYMENT_URL}?"
         { 
@@ -67,6 +67,7 @@ module ActiveMerchant
         }.each do |k,v|
           link << "#{k}=#{v}&"
         end
+        link << "#{:pay_type}=#{chanel}&" if chanel
         URI.encode(link)
       end
       
