@@ -1,10 +1,13 @@
 # -*- encoding : utf-8 -*-
 require "active_merchant"
+require 'rexml/document'
+require 'net/http'
+require 'uri'
 
 module ActiveMerchant
   module Billing
     class PayuGateway < Gateway
-      NEW_PAYMENT_URL = "https://www.platnosci.pl/paygw/UTF/NewPayment"
+      BASE_PAYU_URL = "https://www.platnosci.pl/paygw/"
       
       self.homepage_url = 'http://www.payu.pl/'
       self.display_name = 'PayU'
@@ -52,7 +55,7 @@ module ActiveMerchant
       
       def generate_link(amount, payment_id, firstname = "", lastname = "", email = "", ip = "", chanel = nil, desc = nil)  
         
-        link = "#{NEW_PAYMENT_URL}?"
+        link = "#{BASE_PAYU_URL}UTF/NewPayment?"
         { 
           :first_name => firstname,
           :last_name => lastname,
@@ -74,6 +77,39 @@ module ActiveMerchant
       def confirm_by_session_id(session_id)
         session_id.split('-').last == Digest::MD5.hexdigest(session_id.to_i.to_s + @options[:key1]).to_s
       end
+
+      def confirm_payment(params)
+        pos_id = @options[:pos_id]  
+        key = @options[:key1]
+        ts = (Time.now.to_f*1000).to_i
+        payment_id = params[:session_id]
+        sig = Digest::MD5.hexdigest("#{pos_id}#{payment_id}#{ts}#{key}")
+        raw_response = Net::HTTP.post_form(URI.parse("#{BASE_PAYU_URL}UTF/Payment/get/xml"), {:session_id => payment_id, :ts => ts, :pos_id => pos_id, :sig => sig})
+        response = REXML::Document.new(response.body)
+
+        if !response.blank? and response['response']['status'] == "OK"
+          amount = response['response']['trans']['amount'].to_f/100
+          case response['response']['trans']['status']
+          when "1"
+            return ["created", amount]
+          when "2"        
+            return ["canceled", amount]
+          when "3"        
+            return ["denied", amount] 
+          when "4"
+            return ["created", amount]        
+          when "7"        
+            return ["denied", amount]
+          when "99"                
+            return ["confirmed", amount]
+          else 
+            return false
+          end
+        else
+          return false  
+        end
+      end
+
       
       # https://github.com/Shopify/active_merchant/blob/master/lib/active_merchant/billing/gateways/card_stream.rb
       # https://github.com/netguru/siepomaga/blob/master/app/models/payments/platnosci.rb
