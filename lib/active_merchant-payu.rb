@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require "active_merchant"
 require 'rexml/document'
-require 'net/http'
+require 'net/https'
 require 'uri'
 
 module ActiveMerchant
@@ -79,38 +79,52 @@ module ActiveMerchant
       end
 
       def get_status(params)
+
         pos_id = @options[:pos_id]  
         key = @options[:key1]
         ts = (Time.now.to_f*1000).to_i
         payment_id = params[:session_id]
         sig = Digest::MD5.hexdigest("#{pos_id}#{payment_id}#{ts}#{key}")
-        raw_response = Net::HTTP.post_form(URI.parse("#{BASE_PAYU_URL}UTF/Payment/get/xml"), {:session_id => payment_id, :ts => ts, :pos_id => pos_id, :sig => sig})
-        response = REXML::Document.new(response.body)
+
+        # old not working ->  `read_nonblock': end of file reached (EOFError)
+        # response = Net::HTTP.post_form(URI.parse("#{BASE_PAYU_URL}UTF/Payment/get/xml"), {'session_id' => payment_id, 'ts' => ts, 'pos_id' => pos_id, 'sig' => sig})
+
+
+        uri = URI.parse("#{BASE_PAYU_URL}UTF/Payment/get/xml")
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        request = Net::HTTP::Post.new(uri.request_uri)
+        request.set_form_data({'session_id' => payment_id, 'ts' => ts, 'pos_id' => pos_id, 'sig' => sig})
+        response = http.request(request)
+
+        raise response.to_yaml
+
+
 
         if !response.blank? and response['response']['status'] == "OK"
           amount = response['response']['trans']['amount'].to_f/100
           case response['response']['trans']['status']
           when "1"
             return ["created", amount]
-          when "2"        
+          when "2"
             return ["canceled", amount]
-          when "3"        
+          when "3"
             return ["denied", amount] 
           when "4"
             return ["created", amount]        
-          when "7"        
+          when "7"
             return ["denied", amount]
-          when "99"                
+          when "99"
             return ["confirmed", amount]
-          else 
+          else
             return false
           end
         else
-          return false  
+          return false 
         end
       end
 
-      
       # https://github.com/Shopify/active_merchant/blob/master/lib/active_merchant/billing/gateways/card_stream.rb
       # https://github.com/netguru/siepomaga/blob/master/app/models/payments/platnosci.rb
       def commit(action, parameters)
