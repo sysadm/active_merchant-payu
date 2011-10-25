@@ -50,7 +50,7 @@ module ActiveMerchant
       end
       
       
-      def generate_link(amount, order_id, firstname = "", lastname = "", email = "", ip = "", chanel = nil, desc = nil)  
+      def generate_link(amount, payment_id, firstname = "", lastname = "", email = "", ip = "", chanel = nil, desc = nil)  
         
         link = "#{NEW_PAYMENT_URL}?"
         { 
@@ -60,7 +60,7 @@ module ActiveMerchant
           :pos_id => @options[:pos_id],
           :pos_auth_key => @options[:pos_auth_key],
           :amount => amount*100,
-          :session_id => order_id + "-" + Digest::MD5.hexdigest(order_id.to_s + @options[:key1]).to_s,
+          :session_id => payment_id + "-" + Digest::MD5.hexdigest(payment_id.to_s + @options[:key1]).to_s,
           :client_ip => ip,
           :js => 1,
           :desc => desc || @options[:default_desc]
@@ -71,37 +71,10 @@ module ActiveMerchant
         URI.encode(link)
       end
       
+      def confirm_by_session_id(session_id)
+        session_id.split('-').last == Digest::MD5.hexdigest(session_id.to_i.to_s + @options[:key1]).to_s
+      end
       
-      # {
-      #   :pos_id => "",
-      #   :pos_auth_key => "",
-      #   :session_id => "",
-      #   :amount => "",
-      #   :desc => "",
-      #   :first_name => "",
-      #   :last_name => "",
-      #   :email => "",
-      #   :client_ip => ""
-      # }
-      # {
-      #   :pay_type => "",
-      #   :order_id => "",
-      #   :desc2 => "",
-      #   :trsDesc => "",
-      #   :street => "",
-      #   :street_hn => "",
-      #   :street_an => "",
-      #   :city => "",
-      #   :post_code => "",
-      #   :country => "",
-      #   :country => "",
-      #   :language => "",
-      #   :js => "",
-      #   :payback_login => "",
-      #   :sig => "",
-      #   :sig => ""
-      # }
-        
       # https://github.com/Shopify/active_merchant/blob/master/lib/active_merchant/billing/gateways/card_stream.rb
       # https://github.com/netguru/siepomaga/blob/master/app/models/payments/platnosci.rb
       def commit(action, parameters)
