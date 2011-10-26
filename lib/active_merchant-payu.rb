@@ -92,14 +92,11 @@ module ActiveMerchant
         request = Net::HTTP::Post.new(uri.request_uri)
         request.set_form_data({'session_id' => payment_id, 'ts' => ts, 'pos_id' => pos_id, 'sig' => sig})
         raw_response = http.request(request)
-
         response = REXML::Document.new(raw_response.body)
-
-        puts response
-
         if !response.blank? and response.root.elements['status'].text == "OK"
-          amount = response['response']['trans']['amount'].to_f/100
-          case response['response']['trans']['status']
+          trans = response.root.elements['trans']
+          amount = trans.elements['amount'].text.to_f/100
+          case trans.elements['status'].text
           when "1"
             return ["created", amount]
           when "2"
