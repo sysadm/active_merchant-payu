@@ -85,24 +85,19 @@ module ActiveMerchant
         ts = (Time.now.to_f*1000).to_i
         payment_id = params[:session_id]
         sig = Digest::MD5.hexdigest("#{pos_id}#{payment_id}#{ts}#{key}")
-
-        # old not working ->  `read_nonblock': end of file reached (EOFError)
-        # response = Net::HTTP.post_form(URI.parse("#{BASE_PAYU_URL}UTF/Payment/get/xml"), {'session_id' => payment_id, 'ts' => ts, 'pos_id' => pos_id, 'sig' => sig})
-
-
         uri = URI.parse("#{BASE_PAYU_URL}UTF/Payment/get/xml")
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
         request = Net::HTTP::Post.new(uri.request_uri)
         request.set_form_data({'session_id' => payment_id, 'ts' => ts, 'pos_id' => pos_id, 'sig' => sig})
-        response = http.request(request)
+        raw_response = http.request(request)
 
-        raise response.to_yaml
+        response = REXML::Document.new(raw_response.body)
 
+        puts response
 
-
-        if !response.blank? and response['response']['status'] == "OK"
+        if !response.blank? and response.root.elements['status'].text == "OK"
           amount = response['response']['trans']['amount'].to_f/100
           case response['response']['trans']['status']
           when "1"
