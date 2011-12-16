@@ -8,7 +8,7 @@ module ActiveMerchant
   module Billing
     class PayuGateway < Gateway
       BASE_PAYU_URL = "https://www.platnosci.pl/paygw/"
-      
+
       self.homepage_url = 'http://www.payu.pl/'
       self.display_name = 'PayU'
       # The countries the gateway supports merchants from as 2 digit ISO country codes
@@ -16,17 +16,17 @@ module ActiveMerchant
       self.default_currency = 'PLN'
       #accepted money format
       self.money_format = :cents
-      
+
 
       def initialize(options = {})
         requires!(options, :key1, :key2, :pos_auth_key, :pos_id, :default_desc)
         @options = options
         super
       end
-      
+
       # Methods suggested to be supported by active_merchant
       # https://github.com/Shopify/active_merchant/blob/master/lib/active_merchant/billing/gateway.rb
-      # 
+      #
       # purchase(money, creditcard, options = {})
       # authorize(money, creditcard, options = {})
       # capture(money, authorization, options = {})
@@ -51,12 +51,12 @@ module ActiveMerchant
       def credit(money, identification, options = {})
         not_yet
       end
-      
-      
-      def generate_link(amount, payment_id, firstname = "", lastname = "", email = "", ip = "", chanel = nil, desc = nil)  
-        
+
+
+      def generate_link(amount, payment_id, firstname = "", lastname = "", email = "", ip = "", chanel = nil, desc = nil)
+
         link = "#{BASE_PAYU_URL}UTF/NewPayment?"
-        { 
+        {
           :first_name => firstname,
           :last_name => lastname,
           :email => email,
@@ -73,14 +73,14 @@ module ActiveMerchant
         link << "#{:pay_type}=#{chanel}&" if chanel
         URI.encode(link)
       end
-      
+
       def confirm_by_session_id(session_id)
-        session_id.split('-').last == Digest::MD5.hexdigest(session_id.to_i.to_s + @options[:key1]).to_s
+        session_id.split('-').last == Digest::MD5.hexdigest(session_id.split(/-/)[0..-2].join('-') + @options[:key1]).to_s
       end
 
       def get_status(params)
 
-        pos_id = @options[:pos_id]  
+        pos_id = @options[:pos_id]
         key = @options[:key1]
         ts = (Time.now.to_f*1000).to_i
         payment_id = params[:session_id]
@@ -102,9 +102,9 @@ module ActiveMerchant
           when "2"
             return ["canceled", amount]
           when "3"
-            return ["denied", amount] 
+            return ["denied", amount]
           when "4"
-            return ["created", amount]        
+            return ["created", amount]
           when "7"
             return ["denied", amount]
           when "99"
@@ -113,14 +113,14 @@ module ActiveMerchant
             return false
           end
         else
-          return false 
+          return false
         end
       end
 
       # https://github.com/Shopify/active_merchant/blob/master/lib/active_merchant/billing/gateways/card_stream.rb
       # https://github.com/netguru/siepomaga/blob/master/app/models/payments/platnosci.rb
       def commit(action, parameters)
-        
+
       end
 
       private
@@ -128,7 +128,7 @@ module ActiveMerchant
       def not_yet
         raise 'Not implemented for PayU'
       end
-      
+
     end
   end
 end
