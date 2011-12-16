@@ -53,7 +53,7 @@ module ActiveMerchant
       end
 
 
-      def generate_link(amount, payment_id, firstname = "", lastname = "", email = "", ip = "", chanel = nil, desc = nil)
+      def generate_link(amount, params_array, firstname = "", lastname = "", email = "", ip = "", chanel = nil, desc = nil)
 
         link = "#{BASE_PAYU_URL}UTF/NewPayment?"
         {
@@ -63,7 +63,7 @@ module ActiveMerchant
           :pos_id => @options[:pos_id],
           :pos_auth_key => @options[:pos_auth_key],
           :amount => amount*100,
-          :session_id => payment_id + "-" + Digest::MD5.hexdigest(payment_id.to_s + @options[:key1]).to_s,
+          :session_id => params_array.join('-') + "-" + Digest::MD5.hexdigest(params_array.join('-') + @options[:key1]).to_s,
           :client_ip => ip,
           :js => 1,
           :desc => desc || @options[:default_desc]
